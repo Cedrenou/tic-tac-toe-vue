@@ -1,22 +1,8 @@
 <template>
-  <div
-    class="gameboard w-96 h-96 mx-auto mt-36 flex flex-col"
-  >
-    <div
-      v-for="(row, rowIndex) in gameboard"
-      :key="rowIndex"
-      class="gameboard__row  border-amber-400 flex-1 flex"
-    >
-      <div
-        v-for="(cell, cellIndex) in row"
-        :key="cellIndex"
-        class="gameboard__cell border-2 flex-1 text-white flex justify-center items-center text-8xl relative"
-        @click="play(rowIndex,cellIndex)"
-      >
-        {{ cell === 1 ? 'X' : cell === -1 ? 'O' : '' }}
-      </div>
-    </div>
-  </div>
+  <GameBoard
+    :gameboard="gameboard"
+    @play="play"
+  />
 
   <div v-if="winner">
     <button
@@ -36,6 +22,7 @@
   </div>
 </template>
 <script setup>
+import GameBoard from '@/GameBoard.vue'
 
 import {computed, ref} from 'vue'
 
@@ -71,8 +58,7 @@ function play(rowIndex, cellIndex) {
 
 function calculateVictory (rowIndex) {
   // Check if it's a draw
-  const draw = gameboard.value.flat().every(cell => cell !== 0)
-
+  const draw = computed(() => gameboard.value.flat().every(cell => cell !== 0))
 
   // Check victory condition in diagonals
   const firstDiag = computed(() => gameboard.value[0][0] + gameboard.value[1][1] + gameboard.value[2][2])
@@ -91,7 +77,7 @@ function calculateVictory (rowIndex) {
     winner.value = 'X'
   } else if (rowTotalValue.value === -3 || firstCol.value === -3 || secondCol.value === -3 || thirdCol.value === -3 || firstDiag.value === -3 || secondDiag.value === -3) {
     winner.value = 'O'
-  } else if (draw) {
+  } else if (draw.value) {
     winner.value = 'Draw'
   }
 }
