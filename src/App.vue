@@ -18,7 +18,7 @@
     </div>
   </div>
 
-  <div>
+  <div v-if="winner">
     <button
       class="text-white flex mx-auto border-2 p-4 rounded-lg mt-3 hover:bg-blue-600"
       @click="restart"
@@ -70,6 +70,10 @@ function play(rowIndex, cellIndex) {
 }
 
 function calculateVictory (rowIndex) {
+  // Check if it's a draw
+  const draw = gameboard.value.flat().every(cell => cell !== 0)
+
+
   // Check victory condition in diagonals
   const firstDiag = computed(() => gameboard.value[0][0] + gameboard.value[1][1] + gameboard.value[2][2])
   const secondDiag = computed(() => gameboard.value[0][2] + gameboard.value[1][1] + gameboard.value[2][0])
@@ -87,6 +91,8 @@ function calculateVictory (rowIndex) {
     winner.value = 'X'
   } else if (rowTotalValue.value === -3 || firstCol.value === -3 || secondCol.value === -3 || thirdCol.value === -3 || firstDiag.value === -3 || secondDiag.value === -3) {
     winner.value = 'O'
+  } else if (draw) {
+    winner.value = 'Draw'
   }
 }
 
